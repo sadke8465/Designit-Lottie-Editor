@@ -30,7 +30,7 @@
 
         #global-settings { display: none; padding-top: 16px; margin-top: 16px; border-top: 1px solid var(--border); }
         .section-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
-        
+
         .global-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .input-group { display: flex; flex-direction: column; gap: 4px; }
         .input-group label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
@@ -39,7 +39,7 @@
 
         #layer-list { flex: 1; overflow-y: auto; padding: 20px; background: #fcfcfd; scroll-behavior: smooth; }
         .empty-state { text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 40px; }
-        
+
         .list-section-header { font-size: 12px; font-weight: 700; color: #111; margin: 24px 0 12px 0; border-bottom: 2px solid #e2e2e8; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; user-select: none;}
         .list-section-header:first-child { margin-top: 0; }
         .layer-count-badge { background: #e2e2e8; color: #555; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
@@ -48,23 +48,23 @@
         .layer-item:hover { border-color: #b0b0b8; }
         .layer-item.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2); }
         .layer-item.deleted-layer { background: #f9f9fb; border-color: #e2e2e8; opacity: 0.6; }
-        
+
         .layer-header { padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
         .layer-name-wrapper { display: flex; flex-direction: column; flex: 1; overflow: hidden; justify-content: center;}
         .layer-name { font-weight: 600; font-size: 13px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; }
         .layer-context { font-size: 9px; font-weight: 700; color: #888; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-        
+
         .layer-actions { display: flex; align-items: center; gap: 4px; margin-left: 10px; }
         .action-btn { background: transparent; border: none; padding: 4px; border-radius: 4px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
         .action-btn:hover { background: #f0f0f4; color: var(--text-main); }
         .action-btn.delete-btn:hover { color: var(--danger); background: #ffeceb; }
         .action-btn.solo-btn:hover { color: var(--solo); background: #fef3c7; }
-        
+
         .chevron { width: 16px; height: 16px; color: var(--text-muted); transition: transform 0.2s ease; margin-left: 4px;}
         .layer-item.expanded .chevron { transform: rotate(180deg); }
         .layer-body { display: none; padding: 0 14px 14px 14px; border-top: 1px solid var(--border); background: #fafafc; }
         .layer-item.expanded .layer-body { display: block; padding-top: 14px; }
-        
+
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .control-row { display: flex; align-items: center; gap: 8px; background: var(--surface); padding: 4px; border-radius: 6px; border: 1px solid var(--border);}
         .control-row label { font-size: 11px; color: var(--text-muted); font-weight: 600; width: 20px; text-align: center; }
@@ -102,7 +102,7 @@
         input[type="range"] { flex: 1; -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
         input[type="range"]::-webkit-slider-runnable-track { background: #e2e2e8; height: 6px; border-radius: 3px; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -5px; background: var(--surface); border: 2px solid var(--accent); height: 16px; width: 16px; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
+
         /* Dimming Effect */
         svg .lottie-layer { cursor: pointer; pointer-events: all; }
         svg.dimming .lottie-layer { opacity: 0.2; transition: opacity 0.2s ease; }
@@ -111,6 +111,9 @@
         /* JS Dynamic Bounding Boxes */
         #bbox-selected { position: absolute; border: 2px solid var(--accent); pointer-events: none; z-index: 100; display: none; transition: width 0.05s, height 0.05s, top 0.05s, left 0.05s; }
         #bbox-hover { position: absolute; border: 2px dashed rgba(0, 122, 255, 0.6); pointer-events: none; z-index: 99; display: none; transition: width 0.05s, height 0.05s, top 0.05s, left 0.05s; }
+
+        /* Precomp tree */
+        .precomp-subtree { transition: all 0.2s ease; }
 
     </style>
 </head>
@@ -123,7 +126,7 @@
                 <input type="file" id="file-input" accept=".json">
                 <span class="btn-outline">Upload JSON File</span>
             </div>
-            
+
             <div id="global-settings">
                 <div class="section-title">Canvas Settings</div>
                 <div class="global-grid">
@@ -149,7 +152,7 @@
             <span id="zoom-level" title="Reset Zoom">100%</span>
             <button class="zoom-btn" id="zoom-in" title="Zoom In"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
         </div>
-        
+
         <div id="preview-container">
             <div id="bbox-selected"></div>
             <div id="bbox-hover"></div>
@@ -165,18 +168,33 @@
     </div>
 
     <script>
+        // ===== SECTION 1: STATE & CONSTANTS =====
         let originalData = null; let modifiedData = null; let animInstance = null;
         let currentFileName = "optimized_animation.json";
-        
-        let layerMods = {}; 
-        let imageAssetOverrides = {}; 
-        
+
+        let layerMods = {};
+        let imageAssetOverrides = {};
+
         let editableList = [];
         let structuralList = [];
         let emptyList = [];
 
+        let layerGraph = { nodes: {}, roots: [], assetRoots: {}, byInd: {} };
+        let svgLayerMap = {};
+        let renderDebounceId = null;
+
         let hoveredLayerId = null; let selectedLayerId = null;
-        let baseScale = 1; let userZoom = 1;  
+        let baseScale = 1; let userZoom = 1;
+
+        const MAX_UNDO_STACK = 50;
+        let undoStack = [];
+        let redoStack = [];
+        let undoPushTimer = null;
+        let undoStatePending = false;
+        let imageDataCache = {};
+
+        let searchFilter = '';
+        let frameHighlightTimer = null;
 
         const ICONS = {
             play: `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
@@ -192,45 +210,62 @@
             empty: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2" style="color:#aaa;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`
         };
 
+        // ===== SECTION 2: UTILITIES =====
         function rgbToHex(arr) { if(!arr||arr.length<3) return '#000000'; const r=Math.round(arr[0]*255),g=Math.round(arr[1]*255),b=Math.round(arr[2]*255); return "#"+(1<<24|r<<16|g<<8|b).toString(16).slice(1).toUpperCase(); }
         function hexToRgb(hex) { let r=0,g=0,b=0; if(hex.length===7){r=parseInt(hex.substring(1,3),16)/255;g=parseInt(hex.substring(3,5),16)/255;b=parseInt(hex.substring(5,7),16)/255;} return [r,g,b,1]; }
 
+        // ===== SECTION 3: PLAYER CONTROLS =====
         const slider = document.getElementById('timeline-slider');
         const playPauseBtn = document.getElementById('play-pause-btn');
         const currentFrameEl = document.getElementById('current-frame');
 
         function togglePlay() {
             if (!animInstance) return;
-            if (animInstance.isPaused) { animInstance.play(); playPauseBtn.innerHTML = ICONS.pause; } 
+            if (animInstance.isPaused) { animInstance.play(); playPauseBtn.innerHTML = ICONS.pause; }
             else { animInstance.pause(); playPauseBtn.innerHTML = ICONS.play; }
         }
 
         playPauseBtn.addEventListener('click', togglePlay);
-        document.addEventListener('keydown', (e) => { if (e.code === 'Space' && animInstance && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); togglePlay(); } });
-        slider.addEventListener('input', (e) => { if (animInstance) { animInstance.pause(); playPauseBtn.innerHTML = ICONS.play; animInstance.goToAndStop(parseInt(e.target.value), true); currentFrameEl.innerText = e.target.value; updateDynamicBBoxes(); } });
+        document.addEventListener('keydown', (e) => {
+            if (document.activeElement.tagName === 'INPUT') return;
+            if (e.code === 'Space' && animInstance) { e.preventDefault(); togglePlay(); }
+            if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+            if ((e.metaKey || e.ctrlKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
+        });
+        slider.addEventListener('input', (e) => {
+            if (animInstance) {
+                animInstance.pause(); playPauseBtn.innerHTML = ICONS.play;
+                animInstance.goToAndStop(parseInt(e.target.value), true);
+                currentFrameEl.innerText = e.target.value;
+                updateDynamicBBoxes();
+                updateActiveFrameHighlights(parseInt(e.target.value));
+            }
+        });
 
         document.getElementById('file-input').addEventListener('change', function(event) {
             const file = event.target.files[0]; if (!file) return;
-            currentFileName = file.name; 
-            
+            currentFileName = file.name;
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    originalData = JSON.parse(e.target.result); 
+                    originalData = JSON.parse(e.target.result);
                     modifiedData = JSON.parse(JSON.stringify(originalData));
-                    
+
                     layerMods = {}; imageAssetOverrides = {};
                     editableList = []; structuralList = []; emptyList = [];
                     selectedLayerId = null; hoveredLayerId = null;
-                    
+                    undoStack = []; redoStack = []; imageDataCache = {};
+                    searchFilter = ''; svgLayerMap = {};
+
                     document.getElementById('canvas-w').value = originalData.w || 1920; document.getElementById('canvas-h').value = originalData.h || 1080;
                     document.getElementById('global-settings').style.display = 'block';
-                    
-                    buildFlattenedLists();
-                    renderSidebarLists(); 
-                    calculateBaseScale(); 
-                    applyModificationsAndRender(); 
-                    
+
+                    buildLayerGraph();
+                    renderTreeSidebar();
+                    calculateBaseScale();
+                    applyModificationsAndRender();
+
                     document.getElementById('footer-section').style.display = 'block'; document.getElementById('zoom-toolbar').style.display = 'flex'; document.getElementById('timeline-bar').style.display = 'flex';
                     document.querySelector('.btn-outline').innerHTML = `Loaded: ${file.name}`;
                 } catch (err) { alert("Error parsing JSON. Ensure it's a valid Lottie."); }
@@ -239,21 +274,22 @@
         });
 
         window.addEventListener('resize', () => { if (animInstance) { calculateBaseScale(); updateDynamicBBoxes(); } });
-        document.getElementById('preview-container').addEventListener('scroll', updateDynamicBBoxes); // Track scrolling
+        document.getElementById('preview-container').addEventListener('scroll', updateDynamicBBoxes);
 
         function calculateBaseScale() { if (!modifiedData) return; const container = document.getElementById('preview-container'); baseScale = Math.min((container.clientWidth-80)/modifiedData.w, (container.clientHeight-80)/modifiedData.h, 1); updatePlayerSize(); }
         function updatePlayerSize() { if (!modifiedData) return; const player = document.getElementById('lottie-player'); player.style.width = `${modifiedData.w * baseScale * userZoom}px`; player.style.height = `${modifiedData.h * baseScale * userZoom}px`; document.getElementById('zoom-level').innerText = `${Math.round(userZoom * 100)}%`; if (animInstance) animInstance.resize(); updateDynamicBBoxes(); }
 
         document.getElementById('zoom-in').addEventListener('click', () => { userZoom += 0.25; updatePlayerSize(); });
         document.getElementById('zoom-out').addEventListener('click', () => { userZoom = Math.max(0.25, userZoom - 0.25); updatePlayerSize(); });
-        document.getElementById('zoom-level').addEventListener('click', () => { userZoom = 1; updatePlayerSize(); }); 
+        document.getElementById('zoom-level').addEventListener('click', () => { userZoom = 1; updatePlayerSize(); });
 
+        // ===== SECTION 4: CANVAS INTERACTION =====
         document.getElementById('preview-container').addEventListener('click', function(e) {
             let target = e.target; let clickedId = null;
             while (target && target !== this && target.tagName !== 'svg') {
-                if (target.classList && target.classList.contains('lottie-layer')) { 
-                    const match = Array.from(target.classList).find(c => c.startsWith('lottie-layer-')); 
-                    if (match) { clickedId = match.replace('lottie-layer-', ''); break; } 
+                if (target.classList && target.classList.contains('lottie-layer')) {
+                    const match = Array.from(target.classList).find(c => c.startsWith('lottie-layer-'));
+                    if (match) { clickedId = match.replace('lottie-layer-', ''); break; }
                 }
                 target = target.parentNode;
             }
@@ -261,22 +297,31 @@
         });
 
         function selectLayer(id) {
+            // Clear search if the selected layer is not visible in sidebar
+            if (id && searchFilter) {
+                const node = layerGraph.nodes[id];
+                if (node && !(node.layer.nm || '').toLowerCase().includes(searchFilter.toLowerCase())) {
+                    searchFilter = '';
+                    const searchInput = document.getElementById('layer-search');
+                    if (searchInput) searchInput.value = '';
+                    applySearchFilter();
+                }
+            }
             selectedLayerId = id; updateCanvasHighlights(); updateDynamicBBoxes();
             document.querySelectorAll('.layer-item').forEach(el => el.classList.remove('active', 'expanded'));
             if (id) {
                 const sidebarItem = document.querySelector(`.layer-item[data-item-id="${id}"]`);
-                if (sidebarItem && !layerMods[id].deleted) { 
-                    sidebarItem.classList.add('active', 'expanded'); 
-                    
-                    if (sidebarItem.closest('#structural-list-container')) {
-                        document.getElementById('structural-list-container').style.display = 'block';
-                        document.querySelector('.struct-chevron').style.transform = 'rotate(0deg)';
+                if (sidebarItem && !layerMods[id].deleted) {
+                    sidebarItem.classList.add('active', 'expanded');
+                    // Expand parent precomp subtrees if needed
+                    let parentEl = sidebarItem.parentElement;
+                    while (parentEl) {
+                        if (parentEl.classList && parentEl.classList.contains('precomp-subtree')) {
+                            parentEl.style.display = 'block';
+                        }
+                        parentEl = parentEl.parentElement;
                     }
-                    if (sidebarItem.closest('#empty-list-container')) {
-                        document.getElementById('empty-list-container').style.display = 'block';
-                        document.querySelector('.empty-chevron').style.transform = 'rotate(0deg)';
-                    }
-                    sidebarItem.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+                    sidebarItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
@@ -287,15 +332,17 @@
             const svgContainer = document.querySelector('#lottie-player svg');
             if (!svgContainer) return;
             document.querySelectorAll('.highlighted, .active-layer').forEach(el => el.classList.remove('highlighted', 'active-layer'));
-            
+
             if (hoveredLayerId || selectedLayerId) svgContainer.classList.add('dimming');
             else svgContainer.classList.remove('dimming');
 
             if (hoveredLayerId && layerMods[hoveredLayerId] && !layerMods[hoveredLayerId].deleted && layerMods[hoveredLayerId].visible) {
-                const el = document.querySelector(`.lottie-layer-${hoveredLayerId}`); if (el) el.classList.add('highlighted');
+                const el = svgLayerMap[hoveredLayerId] || document.querySelector(`.lottie-layer-${hoveredLayerId}`);
+                if (el) el.classList.add('highlighted');
             }
             if (selectedLayerId && layerMods[selectedLayerId] && !layerMods[selectedLayerId].deleted && layerMods[selectedLayerId].visible) {
-                const el = document.querySelector(`.lottie-layer-${selectedLayerId}`); if (el) el.classList.add('active-layer');
+                const el = svgLayerMap[selectedLayerId] || document.querySelector(`.lottie-layer-${selectedLayerId}`);
+                if (el) el.classList.add('active-layer');
             }
         }
 
@@ -304,15 +351,14 @@
             if (!animInstance) return;
             const container = document.getElementById('preview-container');
             const containerRect = container.getBoundingClientRect();
-            
+
             function applyBBox(layerId, element) {
                 if (!layerId || !layerMods[layerId] || layerMods[layerId].deleted || !layerMods[layerId].visible) {
                     element.style.display = 'none'; return;
                 }
-                const g = document.querySelector(`.lottie-layer-${layerId}`);
+                const g = svgLayerMap[layerId] || document.querySelector(`.lottie-layer-${layerId}`);
                 if (!g) { element.style.display = 'none'; return; }
 
-                // Drill past the <g> and find the actual rendering paths/images
                 const shapes = Array.from(g.querySelectorAll('path, rect, ellipse, polygon, image'));
                 let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
                 let hasVisible = false;
@@ -321,7 +367,7 @@
                     if (window.getComputedStyle(shape).display === 'none') return;
                     const rect = shape.getBoundingClientRect();
                     if (rect.width === 0 && rect.height === 0) return;
-                    
+
                     minX = Math.min(minX, rect.left);
                     minY = Math.min(minY, rect.top);
                     maxX = Math.max(maxX, rect.right);
@@ -332,10 +378,9 @@
                 if (!hasVisible) { element.style.display = 'none'; return; }
 
                 element.style.display = 'block';
-                // Calculate absolute position inside the scrolling container
                 element.style.left = (minX - containerRect.left + container.scrollLeft - 2) + 'px';
                 element.style.top = (minY - containerRect.top + container.scrollTop - 2) + 'px';
-                element.style.width = (maxX - minX + 4) + 'px'; // + padding
+                element.style.width = (maxX - minX + 4) + 'px';
                 element.style.height = (maxY - minY + 4) + 'px';
             }
 
@@ -343,13 +388,26 @@
             applyBBox(hoveredLayerId, document.getElementById('bbox-hover'));
         }
 
+        function updateActiveFrameHighlights(currentFrame) {
+            document.querySelectorAll('.layer-item').forEach(el => {
+                const id = el.getAttribute('data-item-id');
+                const node = layerGraph.nodes[id];
+                if (!node) return;
+                const isActive = currentFrame >= node.ip && currentFrame < node.op;
+                el.style.opacity = isActive ? '' : '0.45';
+            });
+        }
+
         document.getElementById('canvas-w').addEventListener('input', () => { calculateBaseScale(); applyModificationsAndRender(); });
         document.getElementById('canvas-h').addEventListener('input', () => { calculateBaseScale(); applyModificationsAndRender(); });
         document.getElementById('play-speed').addEventListener('input', function(e) { if (animInstance) animInstance.setSpeed(parseFloat(e.target.value) || 1.0); });
 
+        // ===== SECTION 5: LAYER CLASSIFICATION =====
         function isHiddenOrEmpty(layer) {
-            if (layer.hd === true) return true; 
-            if (layer.td !== undefined && layer.td !== 0) return true; 
+            if (layer.hd === true) return true;
+            if (layer.td !== undefined && layer.td !== 0) return true;
+            if (layer.ty === 3) return true;
+            if (layer.ty === 1) return true;
             if (layer.ty === 4) {
                 function hasFillOrStroke(items) {
                     if (!items || !Array.isArray(items)) return false;
@@ -360,70 +418,149 @@
                     }
                     return false;
                 }
-                if (!hasFillOrStroke(layer.shapes)) return true; 
+                if (!hasFillOrStroke(layer.shapes)) return true;
             }
             return false;
         }
 
-        function extractColors(shapes, basePath = "") {
+        function extractColors(shapes, basePath = "shapes") {
             let extracted = []; if (!shapes) return extracted;
             shapes.forEach((it, i) => {
-                const pathStr = basePath ? `${basePath}_${i}` : `${i}`;
-                if (it.ty === 'gr' && it.it) extracted = extracted.concat(extractColors(it.it, `${pathStr}_it`));
+                const pathStr = `${basePath}.${i}`;
+                if (it.ty === 'gr' && it.it) extracted = extracted.concat(extractColors(it.it, `${pathStr}.it`));
                 else if ((it.ty === 'fl' || it.ty === 'st') && it.c && it.c.k) {
-                    let baseColor = [0,0,0,1]; if (typeof it.c.k[0] === 'number') baseColor = it.c.k; else if (it.c.k[0] && it.c.k[0].s) baseColor = it.c.k[0].s; 
+                    let baseColor = [0,0,0,1]; if (typeof it.c.k[0] === 'number') baseColor = it.c.k; else if (it.c.k[0] && it.c.k[0].s) baseColor = it.c.k[0].s;
                     extracted.push({ path: pathStr, hex: rgbToHex(baseColor), name: it.nm || (it.ty==='fl'?'Fill':'Stroke') });
                 }
             }); return extracted;
         }
 
-        function processLayerArray(layers, prefix, displayContext) {
-            layers.forEach((layer, i) => {
-                const id = `${prefix}__${i}`;
-                if (!layerMods[id]) {
-                    layerMods[id] = { dx:0, dy:0, sx:1, sy:1, op:100, colors:{}, visible:true, deleted:false, solo:false };
-                }
-                const item = { id, layer, index: i, contextName: displayContext };
-                
-                if (isHiddenOrEmpty(layer)) {
-                    emptyList.push(item);
-                } else if (layer.ty === 2 || layer.ty === 4 || layer.ty === 5) {
-                    editableList.push(item);
-                } else {
-                    structuralList.push(item);
-                }
-            });
-        }
-
-        function buildFlattenedLists() {
+        function buildLayerGraph() {
+            layerGraph = { nodes: {}, roots: [], assetRoots: {}, byInd: {} };
             editableList = []; structuralList = []; emptyList = [];
-            if (originalData.layers) processLayerArray(originalData.layers, 'main', 'Main Composition');
-            if (originalData.assets) originalData.assets.forEach(asset => { if (asset.layers) processLayerArray(asset.layers, `asset_${asset.id}`, `Asset: ${asset.id}`); });
+            const tyNames = { 0:"precomp", 1:"solid", 2:"image", 3:"null", 4:"shape", 5:"text" };
+
+            function createNodes(layers, prefix, context, contextName) {
+                layerGraph.byInd[context] = {};
+                const ids = [];
+                layers.forEach((layer, i) => {
+                    const id = `${prefix}__${i}`;
+                    ids.push(id);
+                    if (!layerMods[id]) {
+                        layerMods[id] = { dx:0, dy:0, sx:1, sy:1, op:100, colors:{}, visible:true, deleted:false, solo:false };
+                    }
+                    const node = {
+                        id, layer, index: i, context, contextName,
+                        ty: layer.ty, typeName: tyNames[layer.ty] || "unknown",
+                        ind: layer.ind !== undefined ? layer.ind : i,
+                        parentInd: layer.parent !== undefined ? layer.parent : null,
+                        parentId: null, childIds: [],
+                        mattePairId: null, mattedById: null,
+                        precompAssetId: (layer.ty === 0 && layer.refId) ? layer.refId : null,
+                        precompChildIds: [],
+                        ip: layer.ip !== undefined ? layer.ip : 0,
+                        op: layer.op !== undefined ? layer.op : (originalData.op || 0),
+                        isHidden: layer.hd === true,
+                        isTrackMatte: layer.td !== undefined && layer.td !== 0,
+                        isEmpty: false, isNull: layer.ty === 3, isSolid: layer.ty === 1,
+                        category: "editable"
+                    };
+                    node.isEmpty = isHiddenOrEmpty(layer);
+                    if (node.isEmpty) node.category = "empty";
+                    else if (layer.ty === 2 || layer.ty === 4 || layer.ty === 5) node.category = "editable";
+                    else node.category = "structural";
+
+                    layerGraph.nodes[id] = node;
+                    if (layer.ind !== undefined) layerGraph.byInd[context][layer.ind] = id;
+                });
+                return ids;
+            }
+
+            if (originalData.layers) {
+                layerGraph.roots = createNodes(originalData.layers, 'main', 'main', 'Main Composition');
+            }
+            if (originalData.assets) {
+                originalData.assets.forEach(asset => {
+                    if (asset.layers) {
+                        layerGraph.assetRoots[asset.id] = createNodes(asset.layers, `asset_${asset.id}`, asset.id, `Asset: ${asset.id}`);
+                    }
+                });
+            }
+
+            for (const node of Object.values(layerGraph.nodes)) {
+                if (node.parentInd !== null) {
+                    const indMap = layerGraph.byInd[node.context];
+                    if (indMap && indMap[node.parentInd] !== undefined) {
+                        node.parentId = indMap[node.parentInd];
+                        layerGraph.nodes[node.parentId].childIds.push(node.id);
+                    }
+                }
+            }
+            function resolveMattes(layerIds) {
+                for (let i = 0; i < layerIds.length; i++) {
+                    const node = layerGraph.nodes[layerIds[i]];
+                    if (node.layer.tt !== undefined && i > 0) {
+                        const matteNode = layerGraph.nodes[layerIds[i - 1]];
+                        if (matteNode && matteNode.isTrackMatte) {
+                            node.mattedById = matteNode.id;
+                            matteNode.mattePairId = node.id;
+                        }
+                    }
+                }
+            }
+            resolveMattes(layerGraph.roots);
+            for (const ids of Object.values(layerGraph.assetRoots)) resolveMattes(ids);
+
+            for (const node of Object.values(layerGraph.nodes)) {
+                if (node.precompAssetId && layerGraph.assetRoots[node.precompAssetId]) {
+                    node.precompChildIds = layerGraph.assetRoots[node.precompAssetId];
+                }
+            }
+
+            for (const node of Object.values(layerGraph.nodes)) {
+                const item = { id: node.id, layer: node.layer, index: node.index, contextName: node.contextName };
+                if (node.category === "empty") emptyList.push(item);
+                else if (node.category === "editable") editableList.push(item);
+                else structuralList.push(item);
+            }
         }
 
+        // ===== SECTION 6: SIDEBAR RENDERING =====
         function createLayerHTML(item, isEmptyContext = false) {
             const { id, layer, contextName } = item;
             const indexDisplay = item.index + 1;
-            
-            const itemDiv = document.createElement('div'); 
-            itemDiv.className = 'layer-item'; itemDiv.setAttribute('data-item-id', id); 
-            itemDiv.addEventListener('mouseenter', () => highlightLayer(id)); 
+
+            // Frame range badge
+            const node = layerGraph.nodes[id];
+            const totalFrames = originalData ? (originalData.op || 0) : 0;
+            const ip = node ? node.ip : 0;
+            const op = node ? node.op : totalFrames;
+            const notVisibleAtStart = ip > 0;
+            const coversFullRange = (ip <= 0 && op >= totalFrames);
+            let frameRangeHTML = '';
+            if (!coversFullRange && totalFrames > 0) {
+                const warnColor = notVisibleAtStart ? 'color: var(--solo); font-weight: 700;' : 'color: var(--text-muted);';
+                frameRangeHTML = `<span style="font-size: 9px; ${warnColor} margin-left: 6px; white-space: nowrap;" title="Visible frames: ${Math.round(ip)}-${Math.round(op)}${notVisibleAtStart ? ' (not visible at frame 0)' : ''}">${notVisibleAtStart ? '&#9888; ' : ''}${Math.round(ip)}-${Math.round(op)}f</span>`;
+            }
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'layer-item'; itemDiv.setAttribute('data-item-id', id);
+            itemDiv.addEventListener('mouseenter', () => highlightLayer(id));
             itemDiv.addEventListener('mouseleave', () => highlightLayer(null));
 
             const headerDiv = document.createElement('div'); headerDiv.className = 'layer-header';
-            
+
             let iconStr = layer.ty === 2 ? ICONS.image : (layer.ty === 4 ? ICONS.shape : ICONS.folder);
             if (isEmptyContext) iconStr = ICONS.empty;
-            
-            // Generate Visual Sidebar Previews
+
             let previewHTML = `<div style="display:flex; align-items:center; justify-content:center; width: 28px; height: 28px; background: #f0f0f4; border-radius: 6px; margin-right: 10px; border: 1px solid #e2e2e8; flex-shrink: 0;">${iconStr}</div>`;
-            
+
             if (layer.ty === 2 && layer.refId) {
                 let src = "";
                 let imgAsset = originalData.assets?.find(a => a.id === layer.refId);
-                if (imageAssetOverrides[layer.refId]) { src = imageAssetOverrides[layer.refId].base64; } 
+                if (imageAssetOverrides[layer.refId]) { src = imageAssetOverrides[layer.refId].base64; }
                 else if (imgAsset && imgAsset.p) { src = imgAsset.p.startsWith('data:image') ? imgAsset.p : ((imgAsset.u || '') + imgAsset.p); }
-                
+
                 if (src) { previewHTML = `<img src="${src}" style="width: 28px; height: 28px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e2e8; margin-right: 10px; background: #fff; flex-shrink: 0;">`; }
             } else if (layer.ty === 4 && !isEmptyContext) {
                 const layerColors = extractColors(layer.shapes);
@@ -433,12 +570,12 @@
                     previewHTML = `<div style="display:flex; flex-wrap: wrap; width: 28px; height: 28px; align-items: center; justify-content: center; background: #f9f9fb; border-radius: 6px; border: 1px solid #e2e2e8; margin-right: 10px; flex-shrink: 0;">${dots}</div>`;
                 }
             }
-            
+
             headerDiv.innerHTML = `
                 <div class="layer-name-wrapper" style="flex-direction: row; align-items: center;">
                     ${previewHTML}
                     <div style="display:flex; flex-direction: column; overflow: hidden;">
-                        <div class="layer-name">${indexDisplay}. ${layer.nm || 'Unnamed'}</div>
+                        <div class="layer-name">${indexDisplay}. ${layer.nm || 'Unnamed'}${frameRangeHTML}</div>
                         <div class="layer-context">${contextName}</div>
                     </div>
                 </div>
@@ -448,29 +585,32 @@
                     <button class="action-btn delete-btn" data-id="${id}" title="Delete">${ICONS.trash}</button>
                     <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>`;
-            
+
             headerDiv.addEventListener('click', (e) => {
                 const btn = e.target.closest('.action-btn');
                 if (btn) {
                     e.stopPropagation(); const targetId = btn.getAttribute('data-id');
-                    if (btn.classList.contains('toggle-vis')) { 
-                        layerMods[targetId].visible = !layerMods[targetId].visible; 
-                        btn.innerHTML = layerMods[targetId].visible ? ICONS.eyeOpen : ICONS.eyeClosed; 
+                    if (btn.classList.contains('toggle-vis')) {
+                        pushUndoState();
+                        layerMods[targetId].visible = !layerMods[targetId].visible;
+                        btn.innerHTML = layerMods[targetId].visible ? ICONS.eyeOpen : ICONS.eyeClosed;
                     } else if (btn.classList.contains('delete-btn')) {
-                        layerMods[targetId].deleted = !layerMods[targetId].deleted; 
+                        pushUndoState();
+                        layerMods[targetId].deleted = !layerMods[targetId].deleted;
                         btn.innerHTML = layerMods[targetId].deleted ? ICONS.restore : ICONS.trash;
-                        itemDiv.classList.toggle('deleted-layer'); 
+                        itemDiv.classList.toggle('deleted-layer');
                         itemDiv.querySelector('.layer-name').style.textDecoration = layerMods[targetId].deleted ? 'line-through' : 'none';
-                        if(layerMods[targetId].deleted) itemDiv.classList.remove('expanded'); 
+                        if(layerMods[targetId].deleted) itemDiv.classList.remove('expanded');
                     } else if (btn.classList.contains('solo-btn')) {
+                        pushUndoState();
                         layerMods[targetId].solo = !layerMods[targetId].solo;
                         btn.style.color = layerMods[targetId].solo ? 'var(--solo)' : 'var(--text-muted)';
                     }
                     applyModificationsAndRender();
-                } else { 
-                    if (layerMods[id].deleted) return; 
-                    if (!itemDiv.classList.contains('expanded')) selectLayer(id); 
-                    else itemDiv.classList.remove('expanded'); 
+                } else {
+                    if (layerMods[id].deleted) return;
+                    if (!itemDiv.classList.contains('expanded')) selectLayer(id);
+                    else itemDiv.classList.remove('expanded');
                 }
             });
 
@@ -498,95 +638,163 @@
             const layerColors = extractColors(layer.shapes);
             if (layerColors.length > 0) {
                 controlsHTML += `<div class="color-group-title">Vector Colors</div>`;
-                layerColors.forEach(c => { 
+                layerColors.forEach(c => {
                     const currentHex = layerMods[id].colors[c.path] || c.hex;
-                    controlsHTML += `<div class="color-row"><label title="${c.name}">${c.name}</label><input type="color" value="${currentHex}" data-id="${id}" data-type="color" data-path="${c.path}"></div>`; 
+                    controlsHTML += `<div class="color-row"><label title="${c.name}">${c.name}</label><input type="color" value="${currentHex}" data-id="${id}" data-type="color" data-path="${c.path}"></div>`;
                 });
             }
             bodyDiv.innerHTML = controlsHTML + `</div>`;
-            itemDiv.appendChild(headerDiv); itemDiv.appendChild(bodyDiv); 
+            itemDiv.appendChild(headerDiv); itemDiv.appendChild(bodyDiv);
             return itemDiv;
         }
 
-        function renderSidebarLists() {
-            const listContainer = document.getElementById('layer-list'); listContainer.innerHTML = ''; 
-            
-            editableList.sort((a, b) => {
-                const isAImg = a.layer.ty === 2; const isBImg = b.layer.ty === 2;
-                if (isAImg && !isBImg) return -1; if (!isAImg && isBImg) return 1; return a.index - b.index;
+        function renderTreeSidebar() {
+            const listContainer = document.getElementById('layer-list');
+            listContainer.innerHTML = '';
+
+            // Search bar
+            const searchWrap = document.createElement('div');
+            searchWrap.style.cssText = 'position: sticky; top: 0; background: #fcfcfd; z-index: 5; padding-bottom: 12px;';
+            searchWrap.innerHTML = `<input type="text" id="layer-search" placeholder="Search layers..." value="${searchFilter}" style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; background:var(--surface);">`;
+            listContainer.appendChild(searchWrap);
+
+            const searchInput = searchWrap.querySelector('#layer-search');
+            searchInput.addEventListener('input', (e) => {
+                searchFilter = e.target.value;
+                applySearchFilter();
             });
-
-            // 1. Editable Section
-            const editHeader = document.createElement('div'); editHeader.className = 'list-section-header';
-            editHeader.innerHTML = `<span>Editable Assets</span> <span class="layer-count-badge">${editableList.length}</span>`;
-            listContainer.appendChild(editHeader);
-            editableList.forEach(item => { listContainer.appendChild(createLayerHTML(item)); });
-
-            // 2. Structural Section
-            if (structuralList.length > 0) {
-                const structHeader = document.createElement('div'); structHeader.className = 'list-section-header';
-                structHeader.style.cursor = 'pointer';
-                structHeader.innerHTML = `
-                    <div style="display:flex; align-items:center;">
-                        <svg class="struct-chevron" style="width:14px; height:14px; margin-right:6px; transition: transform 0.2s; transform: rotate(-90deg);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        <span>Structural & Groups</span> 
-                    </div>
-                    <span class="layer-count-badge">${structuralList.length}</span>
-                `;
-
-                const structContainer = document.createElement('div'); structContainer.id = 'structural-list-container'; structContainer.style.display = 'none'; 
-                structHeader.addEventListener('click', () => {
-                    const isHidden = structContainer.style.display === 'none';
-                    structContainer.style.display = isHidden ? 'block' : 'none';
-                    structHeader.querySelector('.struct-chevron').style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+            if (searchFilter) {
+                requestAnimationFrame(() => {
+                    searchInput.focus();
+                    searchInput.setSelectionRange(searchFilter.length, searchFilter.length);
                 });
-
-                listContainer.appendChild(structHeader); listContainer.appendChild(structContainer);
-                structuralList.forEach(item => { structContainer.appendChild(createLayerHTML(item)); });
             }
 
-            // 3. Empty & Mattes Section
-            if (emptyList.length > 0) {
-                const emptyHeader = document.createElement('div'); emptyHeader.className = 'list-section-header';
-                emptyHeader.style.cursor = 'pointer';
-                emptyHeader.innerHTML = `
-                    <div style="display:flex; align-items:center;">
-                        <svg class="empty-chevron" style="width:14px; height:14px; margin-right:6px; transition: transform 0.2s; transform: rotate(-90deg);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        <span>Empty Ghost Layers</span> 
-                    </div>
-                    <span class="layer-count-badge">${emptyList.length}</span>
-                `;
+            // Main composition header
+            const mainHeader = document.createElement('div');
+            mainHeader.className = 'list-section-header';
+            mainHeader.innerHTML = `<span>Main Composition</span> <span class="layer-count-badge">${layerGraph.roots.length}</span>`;
+            listContainer.appendChild(mainHeader);
 
-                const emptyContainer = document.createElement('div'); emptyContainer.id = 'empty-list-container'; emptyContainer.style.display = 'none'; 
-                emptyHeader.addEventListener('click', () => {
-                    const isHidden = emptyContainer.style.display === 'none';
-                    emptyContainer.style.display = isHidden ? 'block' : 'none';
-                    emptyHeader.querySelector('.empty-chevron').style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
-                });
+            // Render root-level layers (no parent)
+            const mainRoots = layerGraph.roots.filter(id => {
+                const node = layerGraph.nodes[id];
+                return node && node.parentId === null;
+            });
+            mainRoots.forEach(id => renderTreeNode(id, listContainer, 0));
 
-                listContainer.appendChild(emptyHeader); listContainer.appendChild(emptyContainer);
-                emptyList.forEach(item => { emptyContainer.appendChild(createLayerHTML(item, true)); });
+            // Attach event delegation (only once)
+            if (!listContainer._listenersAttached) {
+                attachTreeListeners(listContainer);
+                listContainer._listenersAttached = true;
             }
 
+            if (searchFilter) applySearchFilter();
+        }
+
+        function renderTreeNode(nodeId, container, depth) {
+            const node = layerGraph.nodes[nodeId];
+            if (!node) return;
+
+            const item = { id: node.id, layer: node.layer, index: node.index, contextName: node.contextName };
+            const itemEl = createLayerHTML(item, node.category === 'empty');
+
+            // Indent based on depth
+            itemEl.style.marginLeft = `${depth * 16}px`;
+            itemEl.style.width = `calc(100% - ${depth * 16}px)`;
+
+            // Type badge for non-shape/image layers
+            const nameEl = itemEl.querySelector('.layer-name');
+            if (nameEl && node.typeName !== 'shape' && node.typeName !== 'image') {
+                const badge = document.createElement('span');
+                badge.style.cssText = 'font-size:8px; padding:1px 4px; border-radius:3px; margin-left:4px; background:#e8e8ec; color:#666;';
+                badge.textContent = node.typeName;
+                nameEl.appendChild(badge);
+            }
+
+            // Category indicator for non-editable layers
+            if (node.category === 'structural' || node.category === 'empty') {
+                itemEl.style.opacity = node.category === 'empty' ? '0.5' : '0.75';
+                itemEl.style.borderStyle = 'dashed';
+            }
+
+            container.appendChild(itemEl);
+
+            // Render parented children
+            if (node.childIds.length > 0) {
+                node.childIds.forEach(childId => renderTreeNode(childId, container, depth + 1));
+            }
+
+            // Render precomp contents
+            if (node.precompChildIds.length > 0) {
+                const precompWrap = document.createElement('div');
+                precompWrap.className = 'precomp-subtree';
+                precompWrap.style.cssText = `margin-left: ${(depth + 1) * 16}px; border-left: 2px solid var(--accent); padding-left: 6px; display: none;`;
+                precompWrap.setAttribute('data-precomp-for', nodeId);
+
+                const actionsDiv = itemEl.querySelector('.layer-actions');
+                if (actionsDiv) {
+                    const expandBtn = document.createElement('button');
+                    expandBtn.className = 'action-btn';
+                    expandBtn.innerHTML = ICONS.folder;
+                    expandBtn.title = `Expand precomp (${node.precompChildIds.length} layers)`;
+                    expandBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const hidden = precompWrap.style.display === 'none';
+                        precompWrap.style.display = hidden ? 'block' : 'none';
+                        expandBtn.style.color = hidden ? 'var(--accent)' : '';
+                    });
+                    actionsDiv.insertBefore(expandBtn, actionsDiv.firstChild);
+                }
+
+                const precompRoots = node.precompChildIds.filter(cid => {
+                    const cn = layerGraph.nodes[cid];
+                    return cn && cn.parentId === null;
+                });
+                precompRoots.forEach(cid => renderTreeNode(cid, precompWrap, 0));
+
+                container.appendChild(precompWrap);
+            }
+        }
+
+        function attachTreeListeners(listContainer) {
             listContainer.addEventListener('input', function(e) {
                 if (e.target.tagName === 'INPUT' && e.target.type !== 'file') {
-                    const id = e.target.getAttribute('data-id'); const type = e.target.getAttribute('data-type');
-                    if (type === 'pos') layerMods[id][e.target.getAttribute('data-axis')] = parseFloat(e.target.value) || 0;
-                    else if (type === 'scale') layerMods[id][e.target.getAttribute('data-axis')] = parseFloat(e.target.value) || 1.0;
-                    else if (type === 'opacity') layerMods[id].op = Math.max(0, Math.min(100, parseFloat(e.target.value) || 0));
-                    else if (type === 'color') { layerMods[id].colors[e.target.getAttribute('data-path')] = e.target.value; renderSidebarLists(); /* refresh dots */ }
-                    applyModificationsAndRender();
+                    const id = e.target.getAttribute('data-id');
+                    const type = e.target.getAttribute('data-type');
+                    if (type === 'pos') {
+                        layerMods[id][e.target.getAttribute('data-axis')] = parseFloat(e.target.value) || 0;
+                        pushUndoStateDebounced();
+                        scheduleRender();
+                    } else if (type === 'scale') {
+                        layerMods[id][e.target.getAttribute('data-axis')] = parseFloat(e.target.value) || 1.0;
+                        pushUndoStateDebounced();
+                        scheduleRender();
+                    } else if (type === 'opacity') {
+                        layerMods[id].op = Math.max(0, Math.min(100, parseFloat(e.target.value) || 0));
+                        pushUndoStateDebounced();
+                        applyCosmeticOpacity();
+                    } else if (type === 'color') {
+                        pushUndoState();
+                        layerMods[id].colors[e.target.getAttribute('data-path')] = e.target.value;
+                        renderTreeSidebar();
+                        applyModificationsAndRender();
+                    }
                 }
             });
 
             listContainer.addEventListener('change', function(e) {
                 if (e.target.classList.contains('image-replace-input')) {
-                    const refId = e.target.getAttribute('data-refid'); const file = e.target.files[0];
+                    const refId = e.target.getAttribute('data-refid');
+                    const file = e.target.files[0];
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = function(evt) {
-                            imageAssetOverrides[refId] = { base64: evt.target.result, filename: file.name }; 
-                            applyModificationsAndRender(); renderSidebarLists(); // refresh thumbnail
+                            pushUndoState();
+                            imageAssetOverrides[refId] = { base64: evt.target.result, filename: file.name };
+                            imageDataCache[refId] = evt.target.result;
+                            applyModificationsAndRender();
+                            renderTreeSidebar();
                         };
                         reader.readAsDataURL(file);
                     }
@@ -594,42 +802,164 @@
             });
         }
 
+        function applySearchFilter() {
+            const query = searchFilter.toLowerCase().trim();
+            if (!query) {
+                document.querySelectorAll('.layer-item, .precomp-subtree').forEach(el => { el.style.display = ''; });
+                return;
+            }
+
+            document.querySelectorAll('.layer-item').forEach(el => { el.style.display = 'none'; });
+
+            const matchingIds = new Set();
+            for (const node of Object.values(layerGraph.nodes)) {
+                const name = (node.layer.nm || '').toLowerCase();
+                if (name.includes(query)) matchingIds.add(node.id);
+            }
+
+            matchingIds.forEach(id => {
+                const el = document.querySelector(`.layer-item[data-item-id="${id}"]`);
+                if (el) el.style.display = '';
+            });
+
+            // Show ancestors so the tree path is visible
+            matchingIds.forEach(id => {
+                let node = layerGraph.nodes[id];
+                while (node && node.parentId) {
+                    const parentEl = document.querySelector(`.layer-item[data-item-id="${node.parentId}"]`);
+                    if (parentEl) parentEl.style.display = '';
+                    node = layerGraph.nodes[node.parentId];
+                }
+                node = layerGraph.nodes[id];
+                if (node && node.context !== 'main') {
+                    for (const n of Object.values(layerGraph.nodes)) {
+                        if (n.precompAssetId === node.context) {
+                            const precompEl = document.querySelector(`.layer-item[data-item-id="${n.id}"]`);
+                            if (precompEl) precompEl.style.display = '';
+                            const subtree = document.querySelector(`[data-precomp-for="${n.id}"]`);
+                            if (subtree) subtree.style.display = 'block';
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== SECTION 7: UNDO/REDO =====
+        function captureState() {
+            const imageKeys = {};
+            for (const [k, v] of Object.entries(imageAssetOverrides)) {
+                imageKeys[k] = { filename: v.filename };
+                imageDataCache[k] = v.base64;
+            }
+            return {
+                layerMods: JSON.parse(JSON.stringify(layerMods)),
+                imageKeys: imageKeys
+            };
+        }
+
+        function restoreState(snapshot) {
+            layerMods = snapshot.layerMods;
+            imageAssetOverrides = {};
+            for (const [k, meta] of Object.entries(snapshot.imageKeys)) {
+                imageAssetOverrides[k] = { base64: imageDataCache[k], filename: meta.filename };
+            }
+        }
+
+        function pushUndoState() {
+            undoStack.push(captureState());
+            if (undoStack.length > MAX_UNDO_STACK) undoStack.shift();
+            redoStack = [];
+        }
+
+        function pushUndoStateDebounced() {
+            if (!undoStatePending) {
+                pushUndoState();
+                undoStatePending = true;
+            }
+            clearTimeout(undoPushTimer);
+            undoPushTimer = setTimeout(() => { undoStatePending = false; }, 600);
+        }
+
+        function undo() {
+            if (undoStack.length === 0) return;
+            redoStack.push(captureState());
+            restoreState(undoStack.pop());
+            renderTreeSidebar();
+            applyModificationsAndRender();
+        }
+
+        function redo() {
+            if (redoStack.length === 0) return;
+            undoStack.push(captureState());
+            restoreState(redoStack.pop());
+            renderTreeSidebar();
+            applyModificationsAndRender();
+        }
+
+        // ===== SECTION 8: SOLO & DEPENDENCY LOGIC =====
         function calculateSoloDependencies() {
-            let neededPrecomps = new Set(); let soloedPrecomps = new Set(); let anySolo = false;
+            let anySolo = false;
+            let soloContexts = {};
+            let neededPrecomps = new Set();
 
             for (const [id, mod] of Object.entries(layerMods)) {
                 if (mod.solo && !mod.deleted) {
-                    anySolo = true; const match = id.match(/^asset_(.+)__\d+$/); if (match) neededPrecomps.add(match[1]);
+                    anySolo = true;
+                    const node = layerGraph.nodes[id];
+                    if (!node) continue;
+                    if (!soloContexts[node.context]) soloContexts[node.context] = new Set();
+                    soloContexts[node.context].add(id);
                 }
             }
 
-            if (!anySolo) return { anySolo, neededPrecomps, soloedPrecomps };
+            if (!anySolo) return { anySolo, soloContexts, neededPrecomps };
 
-            structuralList.forEach(item => { if (layerMods[item.id].solo && item.layer.ty === 0 && item.layer.refId) { soloedPrecomps.add(item.layer.refId); } });
-
-            let added = true;
-            while(added) {
-                added = false;
-                const checkNeeded = (layers, parentRefId) => { layers.forEach(l => { if (l.ty === 0 && l.refId && neededPrecomps.has(l.refId)) { if (parentRefId && !neededPrecomps.has(parentRefId)) { neededPrecomps.add(parentRefId); added = true; } } }); };
-                const checkSoloedDescendants = (assetId, layers) => { if (soloedPrecomps.has(assetId)) { layers.forEach(l => { if (l.ty === 0 && l.refId && !soloedPrecomps.has(l.refId)) { soloedPrecomps.add(l.refId); added = true; } }); } };
-                if (originalData.layers) checkNeeded(originalData.layers, null);
-                if (originalData.assets) { originalData.assets.forEach(a => { if (a.layers) { checkNeeded(a.layers, a.id); checkSoloedDescendants(a.id, a.layers); } }); }
+            // Trace upward from solo contexts to ensure parent precomps visible
+            for (const contextKey of Object.keys(soloContexts)) {
+                if (contextKey !== 'main') neededPrecomps.add(contextKey);
             }
-            return { anySolo, neededPrecomps, soloedPrecomps };
+
+            let changed = true;
+            while (changed) {
+                changed = false;
+                for (const node of Object.values(layerGraph.nodes)) {
+                    if (node.ty === 0 && node.precompAssetId && neededPrecomps.has(node.precompAssetId)) {
+                        if (node.context !== 'main' && !neededPrecomps.has(node.context)) {
+                            neededPrecomps.add(node.context);
+                            changed = true;
+                        }
+                    }
+                }
+            }
+
+            return { anySolo, soloContexts, neededPrecomps };
         }
 
-        function applyModsToArray(layersArray, prefix, anySolo, neededPrecomps, soloedPrecomps) {
-            let finalLayers = []; let currentRefId = prefix.startsWith('asset_') ? prefix.replace('asset_', '') : null;
-            let isInsideSoloedPrecomp = currentRefId && soloedPrecomps.has(currentRefId);
+        // ===== SECTION 9: MODIFICATION & RENDER PIPELINE =====
+        function applyModsToArray(layersArray, prefix, anySolo, soloContexts, neededPrecomps) {
+            let finalLayers = [];
+            const contextKey = prefix === 'main' ? 'main' : prefix.replace('asset_', '');
+            const contextHasSolo = soloContexts && soloContexts[contextKey];
 
             layersArray.forEach((layer, index) => {
-                const id = `${prefix}__${index}`; const mod = layerMods[id];
-                if (!mod || mod.deleted) return; 
-                layer.cl = `lottie-layer lottie-layer-${id}`;
-                
-                if (anySolo && !isInsideSoloedPrecomp) {
-                    if (mod.solo) { layer.hd = false; } else if (layer.ty === 0 && layer.refId && neededPrecomps.has(layer.refId)) { layer.hd = false; } else { layer.hd = true; }
-                } else { if (!mod.visible) layer.hd = true; }
+                const id = `${prefix}__${index}`;
+                const mod = layerMods[id];
+                if (!mod || mod.deleted) return;
+
+                // Solo visibility
+                if (anySolo) {
+                    if (contextHasSolo) {
+                        if (mod.solo) { layer.hd = false; }
+                        else if (layer.ty === 0 && layer.refId && neededPrecomps.has(layer.refId)) { layer.hd = false; }
+                        else { layer.hd = true; }
+                    } else if (neededPrecomps.has(contextKey)) {
+                        if (!mod.visible) layer.hd = true;
+                    } else {
+                        if (!mod.visible) layer.hd = true;
+                    }
+                } else {
+                    if (!mod.visible) layer.hd = true;
+                }
 
                 const ks = layer.ks;
                 if (ks) {
@@ -643,8 +973,8 @@
 
                 if (Object.keys(mod.colors).length > 0 && layer.shapes) {
                     for (const [pathStr, newHex] of Object.entries(mod.colors)) {
-                        const parts = pathStr.split('_'); let target = layer.shapes; let valid = true;
-                        for (let i = 0; i < parts.length; i++) { if (target[parts[i]]) target = target[parts[i]]; else { valid = false; break; } }
+                        const parts = pathStr.split('.'); let target = layer; let valid = true;
+                        for (let i = 0; i < parts.length; i++) { const next = target[parts[i]]; if (next !== undefined) target = next; else { valid = false; break; } }
                         if (valid && target && target.c && target.c.k) { const newRGB = hexToRgb(newHex); if (typeof target.c.k[0] === 'number') target.c.k = newRGB; else { target.c.k.forEach(kf => { if (kf.s) kf.s = newRGB; if (kf.e) kf.e = newRGB; }); } }
                     }
                 }
@@ -659,11 +989,11 @@
             modifiedData.w = parseInt(document.getElementById('canvas-w').value) || modifiedData.w;
             modifiedData.h = parseInt(document.getElementById('canvas-h').value) || modifiedData.h;
 
-            const { anySolo, neededPrecomps, soloedPrecomps } = calculateSoloDependencies();
+            const { anySolo, soloContexts, neededPrecomps } = calculateSoloDependencies();
 
-            if (modifiedData.layers) modifiedData.layers = applyModsToArray(modifiedData.layers, 'main', anySolo, neededPrecomps, soloedPrecomps);
-            if (modifiedData.assets) modifiedData.assets.forEach(asset => { 
-                if (asset.layers) asset.layers = applyModsToArray(asset.layers, `asset_${asset.id}`, anySolo, neededPrecomps, soloedPrecomps); 
+            if (modifiedData.layers) modifiedData.layers = applyModsToArray(modifiedData.layers, 'main', anySolo, soloContexts, neededPrecomps);
+            if (modifiedData.assets) modifiedData.assets.forEach(asset => {
+                if (asset.layers) asset.layers = applyModsToArray(asset.layers, `asset_${asset.id}`, anySolo, soloContexts, neededPrecomps);
             });
 
             if (modifiedData.assets && Object.keys(imageAssetOverrides).length > 0) {
@@ -675,7 +1005,7 @@
         }
 
         function renderAnimation() {
-            const container = document.getElementById('lottie-player'); container.innerHTML = ''; 
+            const container = document.getElementById('lottie-player'); container.innerHTML = '';
             let wasPaused = animInstance ? animInstance.isPaused : false;
             let currentFrame = animInstance ? animInstance.currentFrame : 0;
             let currentSpeed = parseFloat(document.getElementById('play-speed').value) || 1.0;
@@ -685,32 +1015,124 @@
             animInstance.setSpeed(currentSpeed);
 
             animInstance.addEventListener('DOMLoaded', () => {
+                buildSvgLayerMap();
+                applyCosmeticOpacity();
                 updatePlayerSize(); const svgElement = container.querySelector('svg');
                 if (svgElement) svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
                 updateCanvasHighlights(); updateDynamicBBoxes();
-                
+
                 slider.max = animInstance.totalFrames; document.getElementById('total-frames').innerText = Math.round(animInstance.totalFrames);
                 playPauseBtn.innerHTML = wasPaused ? ICONS.play : ICONS.pause;
                 if (wasPaused) animInstance.goToAndStop(currentFrame, true); else animInstance.goToAndPlay(currentFrame, true);
             });
-            animInstance.addEventListener('enterFrame', (e) => { 
-                slider.value = Math.round(e.currentTime); currentFrameEl.innerText = Math.round(e.currentTime); 
-                updateDynamicBBoxes(); // Bounding box tracks motion!
+            animInstance.addEventListener('enterFrame', (e) => {
+                slider.value = Math.round(e.currentTime); currentFrameEl.innerText = Math.round(e.currentTime);
+                updateDynamicBBoxes();
+                if (!frameHighlightTimer) {
+                    frameHighlightTimer = setTimeout(() => {
+                        updateActiveFrameHighlights(e.currentTime);
+                        frameHighlightTimer = null;
+                    }, 150);
+                }
             });
         }
 
+        function buildSvgLayerMap() {
+            svgLayerMap = {};
+            if (!animInstance || !animInstance.renderer || !animInstance.renderer.elements) {
+                console.warn('Could not access lottie renderer elements for SVG mapping');
+                return;
+            }
+
+            function mapElements(rendererElements, prefix) {
+                if (!rendererElements) return;
+                for (let i = 0; i < rendererElements.length; i++) {
+                    const el = rendererElements[i];
+                    if (!el) continue;
+                    const id = `${prefix}__${i}`;
+                    const svgNode = el.layerElement || el.baseElement || null;
+                    if (svgNode) {
+                        svgLayerMap[id] = svgNode;
+                        svgNode.classList.add('lottie-layer', `lottie-layer-${id}`);
+                    }
+                    if (el.elements && el.data && el.data.refId) {
+                        mapElements(el.elements, `asset_${el.data.refId}`);
+                    }
+                }
+            }
+
+            mapElements(animInstance.renderer.elements, 'main');
+        }
+
+        function scheduleRender() {
+            if (renderDebounceId) cancelAnimationFrame(renderDebounceId);
+            renderDebounceId = requestAnimationFrame(() => {
+                renderDebounceId = null;
+                applyModificationsAndRender();
+            });
+        }
+
+        function applyCosmeticOpacity() {
+            let styleEl = document.getElementById('cosmetic-overrides');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'cosmetic-overrides';
+                document.head.appendChild(styleEl);
+            }
+            let css = '';
+            for (const [id, mod] of Object.entries(layerMods)) {
+                if (mod.deleted) continue;
+                if (mod.op !== 100) {
+                    const escapedId = CSS.escape(id);
+                    css += `.lottie-layer-${escapedId} { opacity: ${mod.op / 100} !important; }\n`;
+                }
+            }
+            styleEl.textContent = css;
+        }
+
+        function buildExportData() {
+            const exportData = JSON.parse(JSON.stringify(originalData));
+            exportData.w = parseInt(document.getElementById('canvas-w').value) || exportData.w;
+            exportData.h = parseInt(document.getElementById('canvas-h').value) || exportData.h;
+
+            const { anySolo, soloContexts, neededPrecomps } = calculateSoloDependencies();
+
+            if (exportData.layers) {
+                exportData.layers = applyModsToArray(exportData.layers, 'main', anySolo, soloContexts, neededPrecomps);
+            }
+            if (exportData.assets) {
+                exportData.assets.forEach(asset => {
+                    if (asset.layers) {
+                        asset.layers = applyModsToArray(asset.layers, `asset_${asset.id}`, anySolo, soloContexts, neededPrecomps);
+                    }
+                });
+            }
+            if (exportData.assets && Object.keys(imageAssetOverrides).length > 0) {
+                exportData.assets.forEach(asset => {
+                    if (imageAssetOverrides[asset.id]) {
+                        asset.p = imageAssetOverrides[asset.id].base64;
+                        asset.u = "";
+                        asset.e = 1;
+                    }
+                });
+            }
+            // Strip cl properties defensively
+            function stripCl(layers) { if (!layers) return; layers.forEach(l => delete l.cl); }
+            stripCl(exportData.layers);
+            if (exportData.assets) exportData.assets.forEach(a => { if (a.layers) stripCl(a.layers); });
+
+            return exportData;
+        }
+
+        // ===== SECTION 10: EXPORT =====
         document.getElementById('download-btn').addEventListener('click', function() {
-            if (!modifiedData) return;
-            const finalData = JSON.parse(JSON.stringify(modifiedData));
-            
-            if (finalData.layers) finalData.layers.forEach(layer => delete layer.cl); 
-            if (finalData.assets) finalData.assets.forEach(a => { if (a.layers) a.layers.forEach(l => delete l.cl); });
+            if (!originalData) return;
+            const finalData = buildExportData();
 
             if (finalData.assets) {
                 finalData.assets.forEach(asset => {
                     if (asset.p !== undefined && !asset.layers) {
-                        if (imageAssetOverrides[asset.id]) { asset.p = imageAssetOverrides[asset.id].base64; asset.u = ""; asset.e = 1; } 
-                        else if (asset.p.startsWith('data:image')) { asset.u = ""; asset.e = 1; }
+                        if (!imageAssetOverrides[asset.id] && asset.p.startsWith('data:image')) { asset.u = ""; asset.e = 1; }
                     }
                 });
             }
@@ -719,7 +1141,7 @@
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
             downloadAnchorNode.setAttribute("download", currentFileName);
-            document.body.appendChild(downloadAnchorNode); 
+            document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click(); downloadAnchorNode.remove();
         });
     </script>
